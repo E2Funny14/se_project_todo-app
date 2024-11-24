@@ -28,4 +28,4 @@ This is a simple Todo application that allows users to add, remove, and mark tas
 
 This project is deployed on GitHub Pages:
 
-- ADD LINK HERE
+<https://github.com/E2Funny14/se_project_todo-app>
