@@ -1,8 +1,9 @@
 import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
-
+import Section from '../Section.js';
 import { initialTodos, validationConfig } from "../utils/constants.js";
 import Todo from "../components/Todo.js";
 import FormValidator from '../components/FormValidator.js';
+import PopupWithForm from '../PopupWithForm.js';
 
 const addTodoButton = document.querySelector(".button_action_add");
 const addTodoPopup = document.querySelector("#add-todo-popup");
@@ -10,31 +11,43 @@ const addTodoForm = document.forms["add-todo-form"];
 const addTodoCloseBtn = addTodoPopup.querySelector(".popup__close");
 const todosList = document.querySelector(".todos__list");
 
-const openModal = (modal) => {
-  modal.classList.add("popup_visible");
-};
-
-const closeModal = (modal) => {
-  modal.classList.remove("popup_visible");
-};
-
-const renderTodo = (item) => {
-  const todo = generateTodo(item);
-  todosList.append(todo); 
-};
-
 const generateTodo = (data) => {
   const todo = new Todo(data, "#todo-template");
   const todoElement = todo.getView();
   return todoElement;
 };
 
+const section = new Section({
+   items: initialTodos,
+   renderer: (item) => {
+    const todo = generateTodo(item);
+    section.addItem(todo);
+   }, 
+   containerSelector: ".todos__list"
+})
+
+section.renderItems();
+
+const addTodoPopupEl = new PopupWithForm({
+  popupSelector: "#add-todo-popup",
+  handleFormSubmit: () => {},
+});
+
+addTodoPopupEl.setEventListeners();
+
+function handleEscapeClose() {
+  const openedModal = document.querySelector("popup_visible");
+  if (openedModal) {
+    openedModal.classList.remove("popup_visible");
+  }
+}
+
 addTodoButton.addEventListener("click", () => {
-  openModal(addTodoPopup);
+  addTodoPopupEl.open();
 });
 
 addTodoCloseBtn.addEventListener("click", () => {
-  closeModal(addTodoPopup);
+  addTodoPopupEl.close();
 });
 
 addTodoForm.addEventListener("submit", (evt) => {
@@ -47,14 +60,10 @@ addTodoForm.addEventListener("submit", (evt) => {
 
   const id = uuidv4();
   const values = { name, date, id };
-  renderTodo(values);
-  closeModal(addTodoPopup);
-
+  const todo = generateTodo(values);
+  section.addItem(todo);
+  addTodoPopupEl.close();
   addTodoForm.reset();
-});
-
-initialTodos.forEach((item) => {
-  renderTodo(item);
 });
 
 const newFormValidator = new FormValidator(validationConfig, addTodoForm);
