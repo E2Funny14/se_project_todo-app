@@ -20,9 +20,8 @@ class TodoCounter {
       if (increment) {
         this._total += 1;
         } else {
-          // this._total -= 1;
           if (this._total > 0) {
-            this._total -= 1;
+          this._total -= 1;
       }
       this._updateText();  
       };
