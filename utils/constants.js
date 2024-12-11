@@ -17,9 +17,9 @@ const initialTodos = [
       completed: false,
       date: new Date(),
     },
-  ];
+];
   
-  const validationConfig = {
+const validationConfig = {
     formSelector: ".popup__form",
     inputSelector: ".popup__input",
     submitButtonSelector: ".popup__button",
