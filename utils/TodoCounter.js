@@ -20,9 +20,12 @@ class TodoCounter {
         this._total += 1;
         } else {
           this._total -= 1;
+      } 
+      if ( this._total === 0) {
+        this._completed = 0;
       }
       this._updateText();  
-    };
+    }
   
     _updateText() {
       this._element.textContent = `Showing ${this._completed} out of ${this._total} completed`;
