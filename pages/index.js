@@ -15,8 +15,7 @@ const todoCounter = new TodoCounter(initialTodos, ".counter__text");
 
 const generateTodo = (data) => {
   const todo = new Todo(data, "#todo-template", handleCheck, todoCounter);
-  const todoElement = todo.getView();
-  return todoElement;
+  return todo.getView();
 };
 
 const section = new Section({
@@ -27,8 +26,8 @@ const section = new Section({
 section.renderItems();
 
 function renderTodo(item) {
-  const todo = generateTodo(item);
-  section.addItem(todo);
+  const todoElement = generateTodo(item);
+  section.addItem(todoElement);
 }
 
 function handleCheck(completed) {
@@ -40,6 +39,7 @@ const addTodoPopupEl = new PopupWithForm({
   handleFormSubmit: (data) => {
     const id = uuidv4();
     data.id = id;
+    renderTodo(data);
     const todo = generateTodo(data);
     section.addItem(todo);
     todoCounter.updateTotal(true);
