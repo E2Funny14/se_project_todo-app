@@ -1,10 +1,10 @@
-import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
-import Section from '../components/Section.js';
+import { v4 as uuidv4 } from "https://jspm.dev/uuid";
+import Section from "../components/Section.js";
 import { initialTodos, validationConfig } from "../utils/constants.js";
 import Todo from "../components/Todo.js";
-import FormValidator from '../components/FormValidator.js';
-import PopupWithForm from '../components/PopupWithForm.js';
-import TodoCounter from '../utils/TodoCounter.js';
+import FormValidator from "../components/FormValidator.js";
+import PopupWithForm from "../components/PopupWithForm.js";
+import TodoCounter from "../components/TodoCounter.js";
 
 const addTodoButton = document.querySelector(".button_action_add");
 const addTodoPopup = document.querySelector("#add-todo-popup");
@@ -20,14 +20,16 @@ const generateTodo = (data) => {
 };
 
 const section = new Section({
-   items: initialTodos,
-   renderer: (item) => {
-    const todo = generateTodo(item);
-    section.addItem(todo);
-   }, 
-   containerSelector: ".todos__list"
-})
+  items: initialTodos,
+  renderer: renderTodo,
+  containerSelector: ".todos__list",
+});
 section.renderItems();
+
+function renderTodo(item) {
+  const todo = generateTodo(item);
+  section.addItem(todo);
+}
 
 function handleCheck(completed) {
   todoCounter.updateCompleted(completed);
@@ -35,17 +37,10 @@ function handleCheck(completed) {
 
 const addTodoPopupEl = new PopupWithForm({
   popupSelector: "#add-todo-popup",
-  handleFormSubmit: (evt) => {
-    evt.preventDefault();
-    const name = evt.target.name.value;
-    const dateInput = evt.target.date.value;
-
-    const date = new Date(dateInput);
-    date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
-
+  handleFormSubmit: (data) => {
     const id = uuidv4();
-    const values = { name, date, id };
-    const todo = generateTodo(values);
+    data.id = id;
+    const todo = generateTodo(data);
     section.addItem(todo);
     todoCounter.updateTotal(true);
     addTodoPopupEl.close();
@@ -55,19 +50,8 @@ const addTodoPopupEl = new PopupWithForm({
 
 addTodoPopupEl.setEventListeners();
 
-function handleEscapeClose() {
-  const openedModal = document.querySelector("popup_visible");
-  if (openedModal) {
-    openedModal.classList.remove("popup_visible");
-  }
-}
-
 addTodoButton.addEventListener("click", () => {
   addTodoPopupEl.open();
-});
-
-addTodoCloseBtn.addEventListener("click", () => {
-  addTodoPopupEl.close();
 });
 
 const newFormValidator = new FormValidator(validationConfig, addTodoForm);
